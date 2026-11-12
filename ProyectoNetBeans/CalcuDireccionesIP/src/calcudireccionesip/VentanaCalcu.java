@@ -36,8 +36,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
         Text_Dir = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         Text_Mascara = new javax.swing.JTextField();
-        Text_Subred = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        Text_Entrada3 = new javax.swing.JTextField();
+        LabelEntrada3 = new javax.swing.JLabel();
         Calculo_Btn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -50,6 +50,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         CIDR_Button.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         CIDR_Button.setText("CIDR");
+        CIDR_Button.setEnabled(false);
         CIDR_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CIDR_ButtonActionPerformed(evt);
@@ -58,7 +59,6 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         VLSM_Button.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         VLSM_Button.setText("VLSM");
-        VLSM_Button.setEnabled(false);
         VLSM_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 VLSM_ButtonActionPerformed(evt);
@@ -83,14 +83,14 @@ public class VentanaCalcu extends javax.swing.JFrame {
             }
         });
 
-        Text_Subred.addActionListener(new java.awt.event.ActionListener() {
+        Text_Entrada3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Text_SubredActionPerformed(evt);
+                Text_Entrada3ActionPerformed(evt);
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setText("Mascara de Subred (e.i. 24)");
+        LabelEntrada3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
 
         Calculo_Btn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Calculo_Btn.setText("Calcular");
@@ -120,9 +120,9 @@ public class VentanaCalcu extends javax.swing.JFrame {
                             .addComponent(Text_Mascara))
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                            .addComponent(LabelEntrada3, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(Text_Subred, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Text_Entrada3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(11, 11, 11))
             .addGroup(layout.createSequentialGroup()
@@ -150,11 +150,11 @@ public class VentanaCalcu extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(LabelEntrada3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Text_Mascara, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Text_Subred, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(Text_Entrada3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Calculo_Btn)
                 .addContainerGap(258, Short.MAX_VALUE))
@@ -165,10 +165,26 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
+        this.CIDR_Button.setEnabled(false);
+        this.VLSM_Button.setEnabled(true);
+        
+        this.NombreTipoCal.setText("CIDR");
+        this.LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
+        
+        this.Text_Entrada3.setText("");
+        
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
     private void VLSM_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VLSM_ButtonActionPerformed
         // TODO add your handling code here:
+        this.VLSM_Button.setEnabled(false);
+        this.CIDR_Button.setEnabled(true);
+        
+        this.NombreTipoCal.setText("VLSM");
+        this.LabelEntrada3.setText("Numero de Subredes");
+        
+        this.Text_Entrada3.setText("0");
+        
     }//GEN-LAST:event_VLSM_ButtonActionPerformed
 
     private void Text_DirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_DirActionPerformed
@@ -179,9 +195,9 @@ public class VentanaCalcu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Text_MascaraActionPerformed
 
-    private void Text_SubredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_SubredActionPerformed
+    private void Text_Entrada3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_Entrada3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_Text_SubredActionPerformed
+    }//GEN-LAST:event_Text_Entrada3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,14 +227,14 @@ public class VentanaCalcu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CIDR_Button;
     private javax.swing.JButton Calculo_Btn;
+    private javax.swing.JLabel LabelEntrada3;
     private javax.swing.JLabel NombreTipoCal;
     private javax.swing.JTextField Text_Dir;
+    private javax.swing.JTextField Text_Entrada3;
     private javax.swing.JTextField Text_Mascara;
-    private javax.swing.JTextField Text_Subred;
     private javax.swing.JButton VLSM_Button;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
 }
