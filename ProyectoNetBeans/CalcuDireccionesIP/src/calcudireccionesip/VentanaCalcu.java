@@ -3,18 +3,30 @@
  */
 package calcudireccionesip;
 
+import javax.swing.table.DefaultTableModel;
+
 public class VentanaCalcu extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCalcu.class.getName());
 
+    DefaultTableModel modelo;
+    
     /**
      * Creates new form VentanaCalcu
      */
     public VentanaCalcu() {
         initComponents();
         
-        this.jScrollPane1.setVisible(false); //esto hace que la tabla de subredes no se muestre desde el inicio
+        jScrollPane1.setVisible(false); //esto hace que la tabla de subredes no se muestre desde el inicio
         
+        Calculo_Btn2.setVisible(false);
+        
+        modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Nombre de la SubRed");
+        modelo.addColumn("No. de Hosts");
+        
+        this.Tabla_VLSM.setModel(modelo);
     }
 
     /**
@@ -36,9 +48,10 @@ public class VentanaCalcu extends javax.swing.JFrame {
         Text_Mascara = new javax.swing.JTextField();
         Text_Entrada3 = new javax.swing.JTextField();
         LabelEntrada3 = new javax.swing.JLabel();
-        Calculo_Btn = new javax.swing.JButton();
+        Calculo_Btn2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tabla_VLSM = new javax.swing.JTable();
+        Calculo_Btn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,21 +105,35 @@ public class VentanaCalcu extends javax.swing.JFrame {
         LabelEntrada3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
 
-        Calculo_Btn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        Calculo_Btn.setText("Calcular");
+        Calculo_Btn2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Calculo_Btn2.setText("Calcular");
+        Calculo_Btn2.setEnabled(false);
+        Calculo_Btn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Calculo_Btn2ActionPerformed(evt);
+            }
+        });
 
         Tabla_VLSM.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre de la Subred", "Hosts"
             }
         ));
         jScrollPane1.setViewportView(Tabla_VLSM);
+
+        Calculo_Btn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Calculo_Btn.setText("Calcular");
+        Calculo_Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Calculo_BtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,15 +165,20 @@ public class VentanaCalcu extends javax.swing.JFrame {
                                 .addComponent(Text_Entrada3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(11, 11, 11))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(249, 249, 249)
-                        .addComponent(Calculo_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(62, 62, 62)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Calculo_Btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(256, 256, 256))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(259, Short.MAX_VALUE)
+                    .addComponent(Calculo_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(257, 257, 257)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,39 +205,64 @@ public class VentanaCalcu extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Text_Mascara, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Text_Entrada3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Calculo_Btn)
+                .addGap(67, 67, 67)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(263, Short.MAX_VALUE))
+                .addComponent(Calculo_Btn2)
+                .addContainerGap(22, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(122, 122, 122)
+                    .addComponent(Calculo_Btn)
+                    .addContainerGap(305, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    Red RedInicial = new Red();
+    
+    FunGenerales FG = new FunGenerales();
+    
+    public void setTabla( int filas){
+        int i;
+        
+        
+    }
+    
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
-        this.CIDR_Button.setEnabled(false);
-        this.VLSM_Button.setEnabled(true);
+        CIDR_Button.setEnabled(false);
+        VLSM_Button.setEnabled(true);
         
-        this.NombreTipoCal.setText("CIDR");
-        this.LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
+        NombreTipoCal.setText("CIDR");
+        LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
         
-        this.Text_Entrada3.setText("");
+        Text_Entrada3.setText("");
         
+        jScrollPane1.setVisible(false);
+        
+        Calculo_Btn.setText("Calcular");
+        
+        Calculo_Btn2.setVisible(false);
         
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
     private void VLSM_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VLSM_ButtonActionPerformed
         // TODO add your handling code here:
-        this.VLSM_Button.setEnabled(false);
-        this.CIDR_Button.setEnabled(true);
+        VLSM_Button.setEnabled(false);
+        CIDR_Button.setEnabled(true);
         
-        this.NombreTipoCal.setText("VLSM");
-        this.LabelEntrada3.setText("Numero de Subredes");
+        NombreTipoCal.setText("VLSM");
+        LabelEntrada3.setText("Numero de Subredes");
         
-        this.Text_Entrada3.setText("1");
+        Text_Entrada3.setText("1");
         
+        jScrollPane1.setVisible(true);
+        
+        Calculo_Btn.setText("Siguiente");
+        
+        Calculo_Btn2.setVisible(true);
     }//GEN-LAST:event_VLSM_ButtonActionPerformed
 
     private void Text_DirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_DirActionPerformed
@@ -219,6 +276,57 @@ public class VentanaCalcu extends javax.swing.JFrame {
     private void Text_Entrada3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_Entrada3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Text_Entrada3ActionPerformed
+
+    private void Calculo_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_BtnActionPerformed
+        // TODO add your handling code here:
+        
+        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) ){
+            
+            int msk = Integer.parseInt(Text_Mascara.getText());
+            
+            
+            RedInicial.setIP( FG.RedBase(Text_Dir.getText(), msk ));
+                FG.printIP(RedInicial.getIP(), msk);
+                
+            RedInicial.setMask( msk );
+                
+            RedInicial.setMascara( FG.gen_Mask(msk) );
+                FG.printIP(RedInicial.getMascara());
+                
+            RedInicial.setTipo( FG.tipoRed(msk) );
+            
+            if(Text_Entrada3.getText().equals("")){
+                
+            
+                
+            } else if( NombreTipoCal.getText().equals("CIDR") ){
+                
+                int Submsk = Integer.parseInt(Text_Entrada3.getText());
+                
+            } else if (NombreTipoCal.getText().equals("VLSM")){
+                
+                
+                int nSubredes = Integer.parseInt(Text_Entrada3.getText());
+                
+                modelo.setRowCount(nSubredes);
+                
+                Tabla_VLSM.setEnabled(true);
+                
+                Calculo_Btn2.setEnabled(true);
+                
+            }
+            
+        } else {
+            
+        }
+        
+        
+        
+    }//GEN-LAST:event_Calculo_BtnActionPerformed
+
+    private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Calculo_Btn2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,6 +357,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CIDR_Button;
     private javax.swing.JButton Calculo_Btn;
+    private javax.swing.JButton Calculo_Btn2;
     private javax.swing.JLabel LabelEntrada3;
     private javax.swing.JLabel NombreTipoCal;
     private javax.swing.JTable Tabla_VLSM;
