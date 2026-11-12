@@ -1,13 +1,8 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+
  */
 package calcudireccionesip;
 
-/**
- *
- * @author Genoveva
- */
 public class VentanaCalcu extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCalcu.class.getName());
@@ -17,6 +12,9 @@ public class VentanaCalcu extends javax.swing.JFrame {
      */
     public VentanaCalcu() {
         initComponents();
+        
+        this.jScrollPane1.setVisible(false); //esto hace que la tabla de subredes no se muestre desde el inicio
+        
     }
 
     /**
@@ -39,6 +37,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
         Text_Entrada3 = new javax.swing.JTextField();
         LabelEntrada3 = new javax.swing.JLabel();
         Calculo_Btn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Tabla_VLSM = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +95,19 @@ public class VentanaCalcu extends javax.swing.JFrame {
         Calculo_Btn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Calculo_Btn.setText("Calcular");
 
+        Tabla_VLSM.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(Tabla_VLSM);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,8 +139,13 @@ public class VentanaCalcu extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(11, 11, 11))
             .addGroup(layout.createSequentialGroup()
-                .addGap(249, 249, 249)
-                .addComponent(Calculo_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(249, 249, 249)
+                        .addComponent(Calculo_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -157,7 +175,9 @@ public class VentanaCalcu extends javax.swing.JFrame {
                             .addComponent(Text_Entrada3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Calculo_Btn)
-                .addContainerGap(258, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(263, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,6 +193,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
         
         this.Text_Entrada3.setText("");
         
+        
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
     private void VLSM_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VLSM_ButtonActionPerformed
@@ -183,7 +204,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
         this.NombreTipoCal.setText("VLSM");
         this.LabelEntrada3.setText("Numero de Subredes");
         
-        this.Text_Entrada3.setText("0");
+        this.Text_Entrada3.setText("1");
         
     }//GEN-LAST:event_VLSM_ButtonActionPerformed
 
@@ -222,6 +243,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new VentanaCalcu().setVisible(true));
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -229,6 +251,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
     private javax.swing.JButton Calculo_Btn;
     private javax.swing.JLabel LabelEntrada3;
     private javax.swing.JLabel NombreTipoCal;
+    private javax.swing.JTable Tabla_VLSM;
     private javax.swing.JTextField Text_Dir;
     private javax.swing.JTextField Text_Entrada3;
     private javax.swing.JTextField Text_Mascara;
@@ -236,5 +259,6 @@ public class VentanaCalcu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
