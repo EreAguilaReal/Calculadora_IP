@@ -289,17 +289,29 @@ public class VentanaCalcu extends javax.swing.JFrame {
                 FG.printIP(RedInicial.getIP(), msk);
                 
             RedInicial.setMask( msk );
+                System.out.println( RedInicial.getMask() );
                 
             RedInicial.setMascara( FG.gen_Mask(msk) );
                 FG.printIP(RedInicial.getMascara());
                 
-            RedInicial.setTipo( FG.tipoRed(msk) );
+            RedInicial.setTipo( FG.tipoRed(RedInicial.getIP()[0]) );
+                System.out.println( RedInicial.getTipo() );
+                
+            RedInicial.setIP_Inicio( FG.IP_ini( RedInicial.getIP() ) );
+                FG.printIP(RedInicial.getIP_Inicio());
+                
+            RedInicial.setIP_Final( FG.IP_fin( RedInicial.getIP() , RedInicial.getMascara()) );
+                FG.printIP(RedInicial.getIP_Final());
             
             if(Text_Entrada3.getText().equals("")){
                 
             
                 
-            } else if( NombreTipoCal.getText().equals("CIDR") ){
+            } else if (RedInicial.getIP()[0] == -1){
+                
+                
+                
+            }else if( NombreTipoCal.getText().equals("CIDR") ){
                 
                 int Submsk = Integer.parseInt(Text_Entrada3.getText());
                 
