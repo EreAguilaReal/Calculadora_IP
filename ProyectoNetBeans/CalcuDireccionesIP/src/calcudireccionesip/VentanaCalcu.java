@@ -224,11 +224,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
     
     FunGenerales FG = new FunGenerales();
     
-    public void setTabla( int filas){
-        int i;
-        
-        
-    }
+    Ventana_info Vinfo;
     
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
@@ -245,6 +241,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
         Calculo_Btn.setText("Calcular");
         
         Calculo_Btn2.setVisible(false);
+        
+        Calculo_Btn2.setEnabled(false);
         
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
@@ -279,8 +277,13 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_BtnActionPerformed
         // TODO add your handling code here:
+        if( Vinfo != null){
+            Vinfo.setVisible(false);
+        }
         
-        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) ){
+        Vinfo = new Ventana_info();
+        
+        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank() ){
             
             int msk = Integer.parseInt(Text_Mascara.getText());
             
@@ -290,34 +293,40 @@ public class VentanaCalcu extends javax.swing.JFrame {
                 
             RedInicial.setMask( msk );
                 System.out.println( RedInicial.getMask() );
-                
-            RedInicial.setMascara( FG.gen_Mask(msk) );
-                FG.printIP(RedInicial.getMascara());
-                
-            RedInicial.setTipo( FG.tipoRed(RedInicial.getIP()[0]) );
-                System.out.println( RedInicial.getTipo() );
-                
-            RedInicial.setIP_Inicio( FG.IP_ini( RedInicial.getIP() ) );
-                FG.printIP(RedInicial.getIP_Inicio());
-                
-            RedInicial.setIP_Final( FG.IP_fin( RedInicial.getIP() , RedInicial.getMascara()) );
-                FG.printIP(RedInicial.getIP_Final());
-            
-            if(Text_Entrada3.getText().equals("")){
-                
             
                 
-            } else if (RedInicial.getIP()[0] == -1){
+            if (RedInicial.getIP()[0] != -1) {
+
+                RedInicial.setMascara(FG.gen_Mask(msk));
+                    FG.printIP(RedInicial.getMascara());
+
+                RedInicial.setTipo(FG.tipoRed(RedInicial.getIP()[0]));
+                    System.out.println(RedInicial.getTipo());
+
+                RedInicial.setIP_Inicio(FG.IP_ini(RedInicial.getIP()));
+                    FG.printIP(RedInicial.getIP_Inicio());
+
+                RedInicial.setIP_Final(FG.IP_fin(RedInicial.getIP(), RedInicial.getMascara()));
+                    FG.printIP(RedInicial.getIP_Final());
+
+            }
+            
+            
+            if (RedInicial.getIP()[0] == -1){
                 
+                System.out.println("ERROR - IP no valida");
                 
-                
-            }else if( NombreTipoCal.getText().equals("CIDR") ){
+            }else if( NombreTipoCal.getText().equals("CIDR") && ( Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText())  ) ){
                 
                 int Submsk = Integer.parseInt(Text_Entrada3.getText());
                 
-            } else if (NombreTipoCal.getText().equals("VLSM")){
+                Vinfo.IP_Cal = RedInicial;
+                Vinfo.Tipo_Cal = "CIDR";
+                Vinfo.setVisible(true);
                 
+            } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText())>=1) ){
                 
+                Vinfo.Tipo_Cal = "VLSM";
                 int nSubredes = Integer.parseInt(Text_Entrada3.getText());
                 
                 modelo.setRowCount(nSubredes);
@@ -329,7 +338,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
             }
             
         } else {
-            
+            System.out.println("ERROR - valores ingresados no validos");
         }
         
         
@@ -338,6 +347,11 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
         // TODO add your handling code here:
+        Vinfo = new Ventana_info();
+        Vinfo.IP_Cal = RedInicial;
+        Vinfo.Tipo_Cal = "VLSM";
+        Vinfo.setVisible(true);
+        
     }//GEN-LAST:event_Calculo_Btn2ActionPerformed
 
     /**
