@@ -24,6 +24,21 @@ public class FunGenerales {
         return bitsH;
     }
     
+    public int bitsRed(int [] mask, int pos){
+        int bitsR = 0;
+        int j;
+
+        String BinIP = Integer.toBinaryString(mask[pos]);
+
+        for (j = 0; j < BinIP.length(); j++) {
+            if (BinIP.toCharArray()[j] == '1') {
+                bitsR++;
+            }
+        }
+
+        return bitsR;
+    }
+    
     public boolean esNum(String s) {
         try {
             double d = Double.parseDouble(s);

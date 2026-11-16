@@ -224,11 +224,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
     
     FunGenerales FG = new FunGenerales();
     
-    public void setTabla( int filas){
-        int i;
-        
-        
-    }
+    Ventana_info Vinfo;
     
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
@@ -281,7 +277,11 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_BtnActionPerformed
         // TODO add your handling code here:
+        if( Vinfo != null){
+            Vinfo.setVisible(false);
+        }
         
+        Vinfo = new Ventana_info();
         
         if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank() ){
             
@@ -320,10 +320,18 @@ public class VentanaCalcu extends javax.swing.JFrame {
                 
                 int Submsk = Integer.parseInt(Text_Entrada3.getText());
                 
+                Vinfo.IP_Cal = RedInicial;
+                Vinfo.Tipo_Cal = "CIDR";
+                Vinfo.setVisible(true);
+                
             } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText())>=1) ){
                 
-                
+                Vinfo.Tipo_Cal = "VLSM";
                 int nSubredes = Integer.parseInt(Text_Entrada3.getText());
+                
+                modelo.setRowCount(nSubredes);
+                
+                Tabla_VLSM.setEnabled(true);
                 
                 Calculo_Btn2.setEnabled(true);
                 
@@ -339,6 +347,11 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
         // TODO add your handling code here:
+        Vinfo = new Ventana_info();
+        Vinfo.IP_Cal = RedInicial;
+        Vinfo.Tipo_Cal = "VLSM";
+        Vinfo.setVisible(true);
+        
     }//GEN-LAST:event_Calculo_Btn2ActionPerformed
 
     /**
