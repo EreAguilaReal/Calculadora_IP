@@ -246,6 +246,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
         
         Calculo_Btn2.setVisible(false);
         
+        Calculo_Btn2.setEnabled(false);
+        
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
     private void VLSM_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VLSM_ButtonActionPerformed
@@ -280,7 +282,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
     private void Calculo_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_BtnActionPerformed
         // TODO add your handling code here:
         
-        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) ){
+        
+        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank() ){
             
             int msk = Integer.parseInt(Text_Mascara.getText());
             
@@ -290,46 +293,44 @@ public class VentanaCalcu extends javax.swing.JFrame {
                 
             RedInicial.setMask( msk );
                 System.out.println( RedInicial.getMask() );
-                
-            RedInicial.setMascara( FG.gen_Mask(msk) );
-                FG.printIP(RedInicial.getMascara());
-                
-            RedInicial.setTipo( FG.tipoRed(RedInicial.getIP()[0]) );
-                System.out.println( RedInicial.getTipo() );
-                
-            RedInicial.setIP_Inicio( FG.IP_ini( RedInicial.getIP() ) );
-                FG.printIP(RedInicial.getIP_Inicio());
-                
-            RedInicial.setIP_Final( FG.IP_fin( RedInicial.getIP() , RedInicial.getMascara()) );
-                FG.printIP(RedInicial.getIP_Final());
-            
-            if(Text_Entrada3.getText().equals("")){
-                
             
                 
-            } else if (RedInicial.getIP()[0] == -1){
+            if (RedInicial.getIP()[0] != -1) {
+
+                RedInicial.setMascara(FG.gen_Mask(msk));
+                    FG.printIP(RedInicial.getMascara());
+
+                RedInicial.setTipo(FG.tipoRed(RedInicial.getIP()[0]));
+                    System.out.println(RedInicial.getTipo());
+
+                RedInicial.setIP_Inicio(FG.IP_ini(RedInicial.getIP()));
+                    FG.printIP(RedInicial.getIP_Inicio());
+
+                RedInicial.setIP_Final(FG.IP_fin(RedInicial.getIP(), RedInicial.getMascara()));
+                    FG.printIP(RedInicial.getIP_Final());
+
+            }
+            
+            
+            if (RedInicial.getIP()[0] == -1){
                 
+                System.out.println("ERROR - IP no valida");
                 
-                
-            }else if( NombreTipoCal.getText().equals("CIDR") ){
+            }else if( NombreTipoCal.getText().equals("CIDR") && ( Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText())  ) ){
                 
                 int Submsk = Integer.parseInt(Text_Entrada3.getText());
                 
-            } else if (NombreTipoCal.getText().equals("VLSM")){
+            } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText())>=1) ){
                 
                 
                 int nSubredes = Integer.parseInt(Text_Entrada3.getText());
-                
-                modelo.setRowCount(nSubredes);
-                
-                Tabla_VLSM.setEnabled(true);
                 
                 Calculo_Btn2.setEnabled(true);
                 
             }
             
         } else {
-            
+            System.out.println("ERROR - valores ingresados no validos");
         }
         
         

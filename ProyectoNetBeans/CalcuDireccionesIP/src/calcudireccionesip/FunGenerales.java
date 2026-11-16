@@ -72,15 +72,6 @@ public class FunGenerales {
                     
                 } else if( mascara[i] != 255 ){
                     
-                    BinIP = Integer.toBinaryString(mascara[i]);
-                    bitsH = 0;
-                    
-                    for( j=0; j<BinIP.length() ; j++ ){
-                        if(BinIP.toCharArray()[j] != '1'){
-                            bitsH++;
-                        }
-                    }
-                    
                     bitsH = bitsHost(mascara, i);
                     
                     cambio = (int) Math.pow(2, bitsH);
@@ -147,7 +138,7 @@ public class FunGenerales {
     
     public int [] IP_ini(int [] IP){
         
-        int [] IP_I = Arrays.copyOf(IP, IP.length); 
+        int [] IP_I = Arrays.copyOf(IP, IP.length);
         
         IP_I[3]+=1;
         
@@ -160,8 +151,6 @@ public class FunGenerales {
         int salto;
         int [] IP_F = Arrays.copyOf(IP, IP.length); ;
         int i, j=0;
-        
-        System.out.println(IP_F [3] + "Este IP");
         
         for( i=0 ; i<mask.length ; i++ ){
             if ( mask[i] == 0 || mask[i] != 255 || (mask[i] == 0 && i == 0) ) {
