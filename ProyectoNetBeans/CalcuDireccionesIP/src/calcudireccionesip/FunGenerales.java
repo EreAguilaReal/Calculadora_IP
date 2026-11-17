@@ -223,7 +223,34 @@ public class FunGenerales {
         
         return tipo;
     }
-    
+        
+    //Bits de host necesarios para la cantidad de host que se desea
+    public int bitsParaHosts(int hosts){
+        int bits = 2; //minimo 30
+        while( Math.pow(2, bits) - 2 < hosts ){
+            bits++;
+        }
+        return bits;
+    }
+
+    //Mascara de subred para esa cantidad de hosts
+    public int maskParaHosts(int hosts){
+        return 32 - bitsParaHosts(hosts);
+    }
+
+    //Tamano total del bloque (incluye red y broadcast)
+    public int tamanoBloque(int hosts){
+        return (int)Math.pow(2, bitsParaHosts(hosts)); // 2^bits
+    }
+
+    //Temporal
+    public static void main(String[] args) {
+        FunGenerales fg = new FunGenerales();
+        int[] pruebas = {8000, 1000, 200, 2};
+        for(int h : pruebas){
+            System.out.println(h + " hosts -> /" + fg.maskParaHosts(h) + " -> " + fg.tamanoBloque(h) + " hosts");
+        }
+    }
     //////////////////////////////////////////////Funciones de Impresion/////////////////////////7
     
     public void printIP( int [] arr, int msk){
