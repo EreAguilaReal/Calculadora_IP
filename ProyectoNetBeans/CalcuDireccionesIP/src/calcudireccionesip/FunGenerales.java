@@ -258,6 +258,46 @@ public class FunGenerales {
         lista.sort( (a,b) -> b.getHostsPedidos() - a.getHostsPedidos() );
     }
 
+    //Convierte {148.204.0.0} a un solo numero de 32 bits
+    public long ipALong(int[] ip){
+        return((long) ip[0]<<24) |
+              ((long) ip[1]<<16) |
+              ((long) ip[2]<<8)  |
+              ((long) ip[3]);
+    }
+
+    //Convierte el numero de 32 bits de vuelta a {148,204,0,0}
+    public int[] longAIp(long v){
+        return new int[]{
+            (int) ((v >> 24) & 255),
+            (int) ((v >> 16) & 255),
+            (int) ((v >> 8) & 255),
+            (int) (v & 255)
+        };
+    }
+
+    //Asigna a cada subred su IP de red y su mascara, una tras otra. 
+    //Devuelve false si las subredes no caben en la red base.
+    public boolean asignarRedes(ArrayList<Red> lista, Red base){
+        long actual = ipALong(base.getIP());
+        long limite = actual + (1L << (32 - base.getMask())); //IP de broadcast + 1
+
+        for(Red s : lista){
+            long bloque = tamanoBloque(s.getHostsPedidos());
+
+            if(actual + bloque > limite){
+                return false; //No caben todas las subredes
+            }
+
+            s.setIP(longAIp(actual));
+            s.setMask(maskParaHosts(s.getHostsPedidos()));
+
+            actual += bloque;
+        }
+
+        return true;
+    }
+
     //////////////////////////////////////////////Funciones de Impresion/////////////////////////7
     
     public void printIP( int [] arr, int msk){

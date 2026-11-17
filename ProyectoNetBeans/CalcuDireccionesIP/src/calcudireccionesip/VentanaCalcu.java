@@ -383,10 +383,15 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         FG.ordenarPorHosts(subredes);
 
-        //TEMPORAL:pa comprobar en consola
-        for(Red s: subredes){
-            System.out.println(s.getNombre() + " - " + s.getHostsPedidos() 
-            + " hosts -> /" + FG.maskParaHosts(s.getHostsPedidos()));
+        if( !FG.asignarRedes(subredes, RedInicial) ){
+            System.out.println("ERROR - las subredes no caben en la red /" + RedInicial.getMask());
+            return;
+        }
+
+        // TEMPORAL: para comprobar en consola
+        for( Red s : subredes ){
+            System.out.print(s.getNombre() + " (" + s.getHostsPedidos() + " hosts) -> ");
+            FG.printIP(s.getIP(), s.getMask());
         }
 
         // TODO add your handling code here:
