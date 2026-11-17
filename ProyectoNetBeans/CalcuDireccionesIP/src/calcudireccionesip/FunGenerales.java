@@ -4,6 +4,7 @@
 package calcudireccionesip;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class FunGenerales {
     
@@ -251,6 +252,12 @@ public class FunGenerales {
             System.out.println(h + " hosts -> /" + fg.maskParaHosts(h) + " -> " + fg.tamanoBloque(h) + " hosts");
         }
     }
+
+    //Ordena la lista de subredes de MAYOR a MENOR numero de hosts
+    public void ordenarPorHosts(ArrayList<Red> lista){
+        lista.sort( (a,b) -> b.getHostsPedidos() - a.getHostsPedidos() );
+    }
+
     //////////////////////////////////////////////Funciones de Impresion/////////////////////////7
     
     public void printIP( int [] arr, int msk){

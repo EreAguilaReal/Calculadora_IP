@@ -23,6 +23,7 @@ public class Ventana_info extends javax.swing.JFrame {
     
     Red IP_Cal = new Red();
     String Tipo_Cal;
+    java.util.ArrayList<Red> Subredes = new java.util.ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.

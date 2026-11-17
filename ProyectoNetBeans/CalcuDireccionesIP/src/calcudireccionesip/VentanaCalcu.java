@@ -346,9 +346,53 @@ public class VentanaCalcu extends javax.swing.JFrame {
     }//GEN-LAST:event_Calculo_BtnActionPerformed
 
     private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
+        //Si el usuario dejo una celda a medias, se confirma lo escrito
+        if(Tabla_VLSM.isEditing()){
+            Tabla_VLSM.getCellEditor().stopCellEditing();
+        }
+
+        java.util.ArrayList<Red> subredes = new java.util.ArrayList<>();
+
+        for(int i=0; i<modelo.getRowCount();i++){
+            Object nom = modelo.getValueAt(i,0);
+            Object hst = modelo.getValueAt(i,1);
+
+            int hosts;
+            try{
+                hosts = Integer.parseInt(String.valueOf(hst).trim());
+            } catch(NumberFormatException e){
+                System.out.println("ERROR - hosts no validos en la fila " + (i+1));
+                return;
+            }
+
+            if(hosts < 1){
+                System.out.println("ERROR - los hosts deben ser al menos 1 (fila " + (i+1) + ")");
+                return;
+            }
+
+            Red sub = new Red();
+
+            if(nom == null || nom.toString().isBlank()){
+                sub.setNombre("Subred " + (i+1));
+            } else {
+                sub.setNombre(nom.toString().trim());
+            }
+            sub.setHostsPedidos(hosts);
+            subredes.add(sub);
+        }
+
+        FG.ordenarPorHosts(subredes);
+
+        //TEMPORAL:pa comprobar en consola
+        for(Red s: subredes){
+            System.out.println(s.getNombre() + " - " + s.getHostsPedidos() 
+            + " hosts -> /" + FG.maskParaHosts(s.getHostsPedidos()));
+        }
+
         // TODO add your handling code here:
         Vinfo = new Ventana_info();
         Vinfo.IP_Cal = RedInicial;
+        Vinfo.Subredes = subredes;
         Vinfo.Tipo_Cal = "VLSM";
         Vinfo.setVisible(true);
         
