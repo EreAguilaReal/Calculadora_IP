@@ -336,6 +336,8 @@ public class FunGenerales {
         
     }
     
-    
+    public String ipAString(int [] ip){
+        return ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
+    }
     
 }

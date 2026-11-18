@@ -390,16 +390,6 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         FG.calcularLimites(subredes);
 
-        // TEMPORAL: para comprobar en consola, luego lo quitamos
-        for( Red s : subredes ){
-            System.out.println("----- " + s.getNombre() + " (" + s.getHostsPedidos() + " hosts)");
-            System.out.print("Red:       "); FG.printIP(s.getIP(), s.getMask());
-            System.out.print("Mascara:   "); FG.printIP(s.getMascara());
-            System.out.print("Primer:    "); FG.printIP(s.getIP_Inicio());
-            System.out.print("Ultimo:    "); FG.printIP(s.getIP_Final());
-            System.out.print("Broadcast: "); FG.printIP(s.getBroadcast());
-        }
-
         // TODO, add your handling code here:
         Vinfo = new Ventana_info();
         Vinfo.IP_Cal = RedInicial;
