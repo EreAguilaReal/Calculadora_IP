@@ -298,6 +298,24 @@ public class FunGenerales {
         return true;
     }
 
+    // Completa, para cada subred que ya tiene IP y mascara:
+    // mascara en formato IP, primer host, ultimo host y broadcast
+    public void calcularLimites(ArrayList<Red> lista){
+
+        for( Red s : lista ){
+
+            long red       = ipALong(s.getIP());
+            long bloque    = 1L << (32 - s.getMask());   // total de direcciones del bloque
+            long broadcast = red + bloque - 1;
+
+            s.setMascara(gen_Mask(s.getMask()));
+            s.setIP_Inicio(longAIp(red + 1));
+            s.setIP_Final(longAIp(broadcast - 1));
+            s.setBroadcast(longAIp(broadcast));
+            s.setTipo(tipoRed(s.getIP()[0]));
+        }
+    }
+
     //////////////////////////////////////////////Funciones de Impresion/////////////////////////7
     
     public void printIP( int [] arr, int msk){
