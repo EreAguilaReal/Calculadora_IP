@@ -27,6 +27,16 @@ public class VentanaCalcu extends javax.swing.JFrame {
         modelo.addColumn("No. de Hosts");
         
         this.Tabla_VLSM.setModel(modelo);
+
+        // Si el usuario cambia IP, mascara o # de subredes, hay que volver a pulsar "Siguiente"
+        javax.swing.event.DocumentListener alCambiar = new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e)  { Calculo_Btn2.setEnabled(false); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e)  { Calculo_Btn2.setEnabled(false); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { Calculo_Btn2.setEnabled(false); }
+        };
+        Text_Dir.getDocument().addDocumentListener(alCambiar);
+        Text_Mascara.getDocument().addDocumentListener(alCambiar);
+        Text_Entrada3.getDocument().addDocumentListener(alCambiar);
     }
 
     /**
@@ -225,6 +235,11 @@ public class VentanaCalcu extends javax.swing.JFrame {
     FunGenerales FG = new FunGenerales();
     
     Ventana_info Vinfo;
+
+    private void mostrarError(String mensaje){
+        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
     
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
@@ -282,6 +297,25 @@ public class VentanaCalcu extends javax.swing.JFrame {
         }
         
         Vinfo = new Ventana_info();
+
+        int mskCheck, entCheck;
+        try {
+            mskCheck = Integer.parseInt(Text_Mascara.getText().trim());
+            entCheck = Integer.parseInt(Text_Entrada3.getText().trim());
+        } catch (NumberFormatException e) {
+            mostrarError("La máscara y el último campo deben ser números enteros.");
+            return;
+        }
+
+        if( mskCheck < 1 || mskCheck > 30 ){
+            mostrarError("La máscara de red debe estar entre 1 y 30.");
+            return;
+        }
+
+        if( NombreTipoCal.getText().equals("VLSM") && (entCheck < 1 || entCheck > 100) ){
+            mostrarError("El número de subredes debe estar entre 1 y 100.");
+            return;
+        }
         
         if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank() ){
             
@@ -314,7 +348,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
             
             if (RedInicial.getIP()[0] == -1){
                 
-                System.out.println("ERROR - IP no valida");
+                mostrarError("ERROR - IP no valida");
                 
             }else if( NombreTipoCal.getText().equals("CIDR") && ( Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText())  ) ){
                 
@@ -338,7 +372,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
             }
             
         } else {
-            System.out.println("ERROR - valores ingresados no validos");
+            mostrarError("ERROR - valores ingresados no validos");
         }
         
         
@@ -347,36 +381,38 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
         //Si el usuario dejo una celda a medias, se confirma lo escrito
-        if(Tabla_VLSM.isEditing()){
+        if( Tabla_VLSM.isEditing() ){
             Tabla_VLSM.getCellEditor().stopCellEditing();
         }
 
         java.util.ArrayList<Red> subredes = new java.util.ArrayList<>();
 
-        for(int i=0; i<modelo.getRowCount();i++){
-            Object nom = modelo.getValueAt(i,0);
-            Object hst = modelo.getValueAt(i,1);
+        for( int i = 0; i < modelo.getRowCount(); i++ ){
+
+            Object nom = modelo.getValueAt(i, 0);
+            Object hst = modelo.getValueAt(i, 1);
 
             int hosts;
-            try{
+            try {
                 hosts = Integer.parseInt(String.valueOf(hst).trim());
-            } catch(NumberFormatException e){
-                System.out.println("ERROR - hosts no validos en la fila " + (i+1));
+            } catch (NumberFormatException e) {
+                mostrarError("Hosts no válidos en la fila " + (i + 1) + ".\nEscribe un número entero.");
                 return;
             }
 
-            if(hosts < 1){
-                System.out.println("ERROR - los hosts deben ser al menos 1 (fila " + (i+1) + ")");
+            if( hosts < 1 || hosts > 1000000000 ){
+                mostrarError("Los hosts de la fila " + (i + 1) + " deben estar entre 1 y 1,000,000,000.");
                 return;
             }
 
             Red sub = new Red();
 
-            if(nom == null || nom.toString().isBlank()){
-                sub.setNombre("Subred " + (i+1));
+            if( nom == null || nom.toString().isBlank() ){
+                sub.setNombre("Subred " + (i + 1));
             } else {
                 sub.setNombre(nom.toString().trim());
             }
+
             sub.setHostsPedidos(hosts);
             subredes.add(sub);
         }
@@ -384,13 +420,13 @@ public class VentanaCalcu extends javax.swing.JFrame {
         FG.ordenarPorHosts(subredes);
 
         if( !FG.asignarRedes(subredes, RedInicial) ){
-            System.out.println("ERROR - las subredes no caben en la red /" + RedInicial.getMask());
+            mostrarError("Las subredes no caben en la red "
+                    + FG.ipAString(RedInicial.getIP()) + "/" + RedInicial.getMask());
             return;
         }
 
         FG.calcularLimites(subredes);
 
-        // TODO, add your handling code here:
         Vinfo = new Ventana_info();
         Vinfo.IP_Cal = RedInicial;
         Vinfo.Subredes = subredes;

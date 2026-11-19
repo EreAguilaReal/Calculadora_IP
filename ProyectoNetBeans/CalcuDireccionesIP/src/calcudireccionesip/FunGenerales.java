@@ -52,6 +52,16 @@ public class FunGenerales {
     public int [] RedBase( String IP, int Mask ){
         
         String [] partes_IP = IP.split("\\.");
+
+        if( partes_IP.length != 4 ){
+            return valorError;
+        }
+
+        for( String p : partes_IP ){
+            if( !p.matches("\\d{1,3}") ){
+                return valorError;
+            }
+        }
         
         int [] par_IP = new int[partes_IP.length];
         int i, j;
@@ -196,10 +206,6 @@ public class FunGenerales {
             
         } else {
             salto = salto - 2;
-            
-            System.out.println(salto + "Este salot");
-            System.out.println(IP_F [j] + "Este IP");
-            
             IP_F [j] += salto;
         }
         
@@ -242,15 +248,6 @@ public class FunGenerales {
     //Tamano total del bloque (incluye red y broadcast)
     public int tamanoBloque(int hosts){
         return (int)Math.pow(2, bitsParaHosts(hosts)); // 2^bits
-    }
-
-    //Temporal
-    public static void main(String[] args) {
-        FunGenerales fg = new FunGenerales();
-        int[] pruebas = {8000, 1000, 200, 2};
-        for(int h : pruebas){
-            System.out.println(h + " hosts -> /" + fg.maskParaHosts(h) + " -> " + fg.tamanoBloque(h) + " hosts");
-        }
     }
 
     //Ordena la lista de subredes de MAYOR a MENOR numero de hosts
