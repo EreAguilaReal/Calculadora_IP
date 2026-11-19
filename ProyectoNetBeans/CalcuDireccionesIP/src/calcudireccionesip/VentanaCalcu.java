@@ -6,27 +6,45 @@ package calcudireccionesip;
 import javax.swing.table.DefaultTableModel;
 
 public class VentanaCalcu extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCalcu.class.getName());
 
     DefaultTableModel modelo;
-    
+
     /**
      * Creates new form VentanaCalcu
      */
     public VentanaCalcu() {
         initComponents();
-        
+
         jScrollPane1.setVisible(false); //esto hace que la tabla de subredes no se muestre desde el inicio
-        
+
         Calculo_Btn2.setVisible(false);
-        
+
         modelo = new DefaultTableModel();
-        
+
         modelo.addColumn("Nombre de la SubRed");
         modelo.addColumn("No. de Hosts");
-        
+
         this.Tabla_VLSM.setModel(modelo);
+
+        // Si el usuario cambia IP, mascara o # de subredes, hay que volver a pulsar "Siguiente"
+        javax.swing.event.DocumentListener alCambiar = new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                Calculo_Btn2.setEnabled(false);
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                Calculo_Btn2.setEnabled(false);
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                Calculo_Btn2.setEnabled(false);
+            }
+        };
+        Text_Dir.getDocument().addDocumentListener(alCambiar);
+        Text_Mascara.getDocument().addDocumentListener(alCambiar);
+        Text_Entrada3.getDocument().addDocumentListener(alCambiar);
     }
 
     /**
@@ -221,45 +239,50 @@ public class VentanaCalcu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     Red RedInicial = new Red();
-    
+
     FunGenerales FG = new FunGenerales();
-    
+
     Ventana_info Vinfo;
-    
+
+    private void mostrarError(String mensaje) {
+        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
         // TODO add your handling code here:
         CIDR_Button.setEnabled(false);
         VLSM_Button.setEnabled(true);
-        
+
         NombreTipoCal.setText("CIDR");
         LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
-        
+
         Text_Entrada3.setText("");
-        
+
         jScrollPane1.setVisible(false);
-        
+
         Calculo_Btn.setText("Calcular");
-        
+
         Calculo_Btn2.setVisible(false);
-        
+
         Calculo_Btn2.setEnabled(false);
-        
+
     }//GEN-LAST:event_CIDR_ButtonActionPerformed
 
     private void VLSM_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VLSM_ButtonActionPerformed
         // TODO add your handling code here:
         VLSM_Button.setEnabled(false);
         CIDR_Button.setEnabled(true);
-        
+
         NombreTipoCal.setText("VLSM");
         LabelEntrada3.setText("Numero de Subredes");
-        
+
         Text_Entrada3.setText("1");
-        
+
         jScrollPane1.setVisible(true);
-        
+
         Calculo_Btn.setText("Siguiente");
-        
+
         Calculo_Btn2.setVisible(true);
     }//GEN-LAST:event_VLSM_ButtonActionPerformed
 
@@ -277,81 +300,147 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     private void Calculo_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_BtnActionPerformed
         // TODO add your handling code here:
-        if( Vinfo != null){
+        if (Vinfo != null) {
             Vinfo.setVisible(false);
         }
-        
+
         Vinfo = new Ventana_info();
-        
-        if ( FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank() ){
-            
+
+        int mskCheck, entCheck;
+        try {
+            mskCheck = Integer.parseInt(Text_Mascara.getText().trim());
+            entCheck = Integer.parseInt(Text_Entrada3.getText().trim());
+        } catch (NumberFormatException e) {
+            mostrarError("La máscara y el último campo deben ser números enteros.");
+            return;
+        }
+
+        if (mskCheck < 1 || mskCheck > 30) {
+            mostrarError("La máscara de red debe estar entre 1 y 30.");
+            return;
+        }
+
+        if (NombreTipoCal.getText().equals("VLSM") && (entCheck < 1 || entCheck > 100)) {
+            mostrarError("El número de subredes debe estar entre 1 y 100.");
+            return;
+        }
+
+        if (FG.esNum(Text_Mascara.getText()) && FG.esNum(Text_Entrada3.getText()) && !Text_Dir.getText().isBlank()) {
+
             int msk = Integer.parseInt(Text_Mascara.getText());
-            
-            
-            RedInicial.setIP( FG.RedBase(Text_Dir.getText(), msk ));
-                FG.printIP(RedInicial.getIP(), msk);
-                
-            RedInicial.setMask( msk );
-                System.out.println( RedInicial.getMask() );
-            
-                
+
+            RedInicial.setIP(FG.RedBase(Text_Dir.getText(), msk));
+            FG.printIP(RedInicial.getIP(), msk);
+
+            RedInicial.setMask(msk);
+            System.out.println(RedInicial.getMask());
+
             if (RedInicial.getIP()[0] != -1) {
 
                 RedInicial.setMascara(FG.gen_Mask(msk));
-                    FG.printIP(RedInicial.getMascara());
+                FG.printIP(RedInicial.getMascara());
 
                 RedInicial.setTipo(FG.tipoRed(RedInicial.getIP()[0]));
-                    System.out.println(RedInicial.getTipo());
+                System.out.println(RedInicial.getTipo());
 
                 RedInicial.setIP_Inicio(FG.IP_ini(RedInicial.getIP()));
-                    FG.printIP(RedInicial.getIP_Inicio());
+                FG.printIP(RedInicial.getIP_Inicio());
 
                 RedInicial.setIP_Final(FG.IP_fin(RedInicial.getIP(), RedInicial.getMascara()));
-                    FG.printIP(RedInicial.getIP_Final());
+                FG.printIP(RedInicial.getIP_Final());
 
             }
-            
-            
-            if (RedInicial.getIP()[0] == -1){
-                
-                System.out.println("ERROR - IP no valida");
-                
-            }else if( NombreTipoCal.getText().equals("CIDR") && ( Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText())  ) ){
-                
-                int Submsk = Integer.parseInt(Text_Entrada3.getText());
-                
+
+            if (RedInicial.getIP()[0] == -1) {
+
+                mostrarError("ERROR - IP no valida");
+
+            } else if (NombreTipoCal.getText().equals("CIDR") && (Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText()))) {
+
+                int Submsk = Integer.parseInt(Text_Entrada3.getText().trim());
+                if (Submsk <= msk || Submsk > 30) {
+                    mostrarError("La máscara de subred debe ser mayor a la inicial y máximo 30.");
+                    return;
+                }
                 Vinfo.IP_Cal = RedInicial;
+                Vinfo.Subredes = FG.generarSubredesCIDR(RedInicial, Submsk);
                 Vinfo.Tipo_Cal = "CIDR";
                 Vinfo.setVisible(true);
-                
-            } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText())>=1) ){
-                
+
+            } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText()) >= 1)) {
+
                 Vinfo.Tipo_Cal = "VLSM";
                 int nSubredes = Integer.parseInt(Text_Entrada3.getText());
-                
+
                 modelo.setRowCount(nSubredes);
-                
+
                 Tabla_VLSM.setEnabled(true);
-                
+
                 Calculo_Btn2.setEnabled(true);
-                
+
             }
-            
+
         } else {
-            System.out.println("ERROR - valores ingresados no validos");
+            mostrarError("ERROR - valores ingresados no validos");
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_Calculo_BtnActionPerformed
 
     private void Calculo_Btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Calculo_Btn2ActionPerformed
-        // TODO add your handling code here:
+        //Si el usuario dejo una celda a medias, se confirma lo escrito
+        if (Tabla_VLSM.isEditing()) {
+            Tabla_VLSM.getCellEditor().stopCellEditing();
+        }
+
+        java.util.ArrayList<Red> subredes = new java.util.ArrayList<>();
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+
+            Object nom = modelo.getValueAt(i, 0);
+            Object hst = modelo.getValueAt(i, 1);
+
+            int hosts;
+            try {
+                hosts = Integer.parseInt(String.valueOf(hst).trim());
+            } catch (NumberFormatException e) {
+                mostrarError("Hosts no válidos en la fila " + (i + 1) + ".\nEscribe un número entero.");
+                return;
+            }
+
+            if (hosts < 1 || hosts > 1000000000) {
+                mostrarError("Los hosts de la fila " + (i + 1) + " deben estar entre 1 y 1,000,000,000.");
+                return;
+            }
+
+            Red sub = new Red();
+
+            if (nom == null || nom.toString().isBlank()) {
+                sub.setNombre("Subred " + (i + 1));
+            } else {
+                sub.setNombre(nom.toString().trim());
+            }
+
+            sub.setHostsPedidos(hosts);
+            subredes.add(sub);
+        }
+
+        FG.ordenarPorHosts(subredes);
+
+        if (!FG.asignarRedes(subredes, RedInicial)) {
+            mostrarError("Las subredes no caben en la red "
+                    + FG.ipAString(RedInicial.getIP()) + "/" + RedInicial.getMask());
+            return;
+        }
+
+        FG.calcularLimites(subredes);
+
         Vinfo = new Ventana_info();
         Vinfo.IP_Cal = RedInicial;
+        Vinfo.Subredes = subredes;
         Vinfo.Tipo_Cal = "VLSM";
         Vinfo.setVisible(true);
-        
+
     }//GEN-LAST:event_Calculo_Btn2ActionPerformed
 
     /**
@@ -377,7 +466,7 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new VentanaCalcu().setVisible(true));
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

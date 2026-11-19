@@ -9,7 +9,7 @@ package calcudireccionesip;
  * @author Genoveva
  */
 public class Ventana_info extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Ventana_info.class.getName());
 
     /**
@@ -17,12 +17,14 @@ public class Ventana_info extends javax.swing.JFrame {
      */
     public Ventana_info() {
         initComponents();
-        
+
         Informacion.setEditable(false); //El text area se ve mejor, por eso no es jlabel
     }
-    
+
     Red IP_Cal = new Red();
     String Tipo_Cal;
+    java.util.ArrayList<Red> Subredes = new java.util.ArrayList<>();
+    FunGenerales FG = new FunGenerales();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -95,20 +97,91 @@ public class Ventana_info extends javax.swing.JFrame {
 
     }//GEN-LAST:event_InformacionComponentShown
 
+    // Una linea "etiqueta + valor" con la etiqueta alineada a 20 caracteres
+    private String linea(String etiqueta, String valor) {
+        return "  " + String.format("%-20s", etiqueta) + valor + "\n";
+    }
+
+    private String textoCIDR() {
+        StringBuilder sb = new StringBuilder();
+        long tamBloque = Subredes.isEmpty() ? 0 : (1L << (32 - Subredes.get(0).getMask()));
+        long hostsUtiles = tamBloque >= 4 ? (tamBloque - 2) : 0;
+
+        sb.append("Red base: ").append(FG.ipAString(IP_Cal.getIP()))
+                .append("/").append(IP_Cal.getMask()).append("\n");
+        sb.append("Total de subredes: ").append(Subredes.size()).append("\n\n");
+
+        for (Red s : Subredes) {
+            sb.append("=== ").append(s.getNombre()).append(" ===\n");
+            sb.append(linea("Hosts utiles:", String.valueOf(hostsUtiles)));
+            sb.append(linea("Red:", FG.ipAString(s.getIP()) + "/" + s.getMask()));
+            sb.append(linea("Mascara:", FG.ipAString(s.getMascara())));
+            if (tamBloque >= 4) {
+                sb.append(linea("Primer host:", FG.ipAString(s.getIP_Inicio())));
+                sb.append(linea("Ultimo host:", FG.ipAString(s.getIP_Final())));
+            }
+            sb.append(linea("Broadcast:", FG.ipAString(s.getBroadcast())));
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private String textoVLSM() {
+
+        StringBuilder sb = new StringBuilder();
+        long usadas = 0;
+
+        sb.append("Red base: ").append(FG.ipAString(IP_Cal.getIP()))
+                .append("/").append(IP_Cal.getMask()).append("\n\n");
+
+        for (Red s : Subredes) {
+
+            long bloque = 1L << (32 - s.getMask());
+            usadas += bloque;
+
+            sb.append("=== ").append(s.getNombre()).append(" ===\n");
+            sb.append(linea("Hosts pedidos:", String.valueOf(s.getHostsPedidos())));
+            sb.append(linea("Hosts disponibles:", String.valueOf(bloque - 2)));
+            sb.append(linea("Red:", FG.ipAString(s.getIP()) + "/" + s.getMask()));
+            sb.append(linea("Mascara:", FG.ipAString(s.getMascara())));
+            sb.append(linea("Primer host:", FG.ipAString(s.getIP_Inicio())));
+            sb.append(linea("Ultimo host:", FG.ipAString(s.getIP_Final())));
+            sb.append(linea("Broadcast:", FG.ipAString(s.getBroadcast())));
+            sb.append("\n");
+        }
+
+        long total = 1L << (32 - IP_Cal.getMask());
+        long libres = total - usadas;
+
+        sb.append("=== Resumen ===\n");
+        sb.append(linea("Direcciones usadas:", usadas + " de " + total));
+        sb.append(linea("Direcciones libres:", String.valueOf(libres)));
+
+        if (libres > 0) {
+            long siguiente = FG.ipALong(IP_Cal.getIP()) + usadas;
+            sb.append(linea("Primera libre:", FG.ipAString(FG.longAIp(siguiente))));
+        }
+
+        return sb.toString();
+    }
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         NombreTipoCal.setText(Tipo_Cal);
-        
-        if( Tipo_Cal.equals("CIDR") ){
-            
-            
-            
+
+        if (Tipo_Cal.equals("CIDR")) {
+            Informacion.setFont(new java.awt.Font("Monospaced", 0, 13));
+            Informacion.setText(textoCIDR());
+            Informacion.setCaretPosition(0);
         } else {
-            
-            
-            
+
+            Informacion.setFont(new java.awt.Font("Monospaced", 0, 13));
+            Informacion.setText(textoVLSM());
+            Informacion.setCaretPosition(0);   // que el scroll empiece arriba
+
         }
-        
+
     }//GEN-LAST:event_formWindowOpened
 
     /**
