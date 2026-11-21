@@ -8,7 +8,11 @@ import java.util.ArrayList;
 
 public class FunGenerales {
 
+    
+    //valor si la IP no es de sintaxis correcta
     int[] valorError = {-1, -1, -1, -1};
+    
+    //obtiene el numero de bits de host para un segmento de la mascara
 
     public int bitsHost(int[] mask, int pos) {
         int bitsH = 0;
@@ -24,6 +28,8 @@ public class FunGenerales {
 
         return bitsH;
     }
+    
+    //obtiene el numero de bits de red para un segmento de la mascara
 
     public int bitsRed(int[] mask, int pos) {
         int bitsR = 0;
@@ -39,6 +45,8 @@ public class FunGenerales {
 
         return bitsR;
     }
+    
+    //Valida si un texto es un numero o no
 
     public boolean esNum(String s) {
         try {
@@ -48,6 +56,8 @@ public class FunGenerales {
         }
         return true;
     }
+    
+    //Calcula y obiene la Direccion de REd de la IP ingresada
 
     public int[] RedBase(String IP, int Mask) {
 
@@ -123,6 +133,8 @@ public class FunGenerales {
 
     }
 
+    
+    //Genera la mascara de red a partir de su representacion en nuemro decimal
     public int[] gen_Mask(int mask) {
 
         int[] mascara = new int[4];
@@ -163,7 +175,8 @@ public class FunGenerales {
         return mascara;
 
     }
-
+    
+    // obtiene la primera IP a la cual se tiene acceso en la red
     public int[] IP_ini(int[] IP) {
 
         int[] IP_I = Arrays.copyOf(IP, IP.length);
@@ -173,7 +186,8 @@ public class FunGenerales {
         return IP_I;
 
     }
-
+    
+    //Calcula cual es la IP final a la que se tiene acceso en una red
     public int[] IP_fin(int[] IP, int[] mask) {
 
         int salto;
@@ -214,7 +228,19 @@ public class FunGenerales {
         return IP_F;
 
     }
+    
+    //Obtiene la IP de broadcast de la Direccion de red
+    public int[] IP_Broad(int[] IP) {
 
+        int[] IP_I = Arrays.copyOf(IP, IP.length);
+
+        IP_I[3] += 1;
+
+        return IP_I;
+
+    }
+
+    //Obtiene el tipo de IP que se ingreso
     public char tipoRed(int ip) {
         char tipo;
 

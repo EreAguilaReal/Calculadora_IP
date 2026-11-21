@@ -109,6 +109,11 @@ public class Ventana_info extends javax.swing.JFrame {
 
         sb.append("Red base: ").append(FG.ipAString(IP_Cal.getIP()))
                 .append("/").append(IP_Cal.getMask()).append("\n");
+        sb.append("Mascara: ").append( FG.ipAString(IP_Cal.getMascara()) ).append("\n");
+        sb.append("Primer Host: ").append( FG.ipAString( IP_Cal.getIP_Inicio() ) ).append("\n");
+        sb.append("Ultimo Host: ").append( FG.ipAString( IP_Cal.getIP_Final() ) ).append("\n");
+        sb.append("Broadcast: ").append( FG.ipAString( IP_Cal.getBroadcast() ) ).append("\n");
+        
         sb.append("Total de subredes: ").append(Subredes.size()).append("\n\n");
 
         for (Red s : Subredes) {
@@ -133,7 +138,11 @@ public class Ventana_info extends javax.swing.JFrame {
         long usadas = 0;
 
         sb.append("Red base: ").append(FG.ipAString(IP_Cal.getIP()))
-                .append("/").append(IP_Cal.getMask()).append("\n\n");
+                .append("/").append(IP_Cal.getMask()).append("\n");
+        sb.append("Mascara: ").append( FG.ipAString(IP_Cal.getMascara()) ).append("\n");
+        sb.append("Primer Host: ").append( FG.ipAString( IP_Cal.getIP_Inicio() ) ).append("\n");
+        sb.append("Ultimo Host: ").append( FG.ipAString( IP_Cal.getIP_Final() ) ).append("\n");
+        sb.append("Broadcast: ").append( FG.ipAString( IP_Cal.getBroadcast() ) ).append("\n\n");
 
         for (Red s : Subredes) {
 

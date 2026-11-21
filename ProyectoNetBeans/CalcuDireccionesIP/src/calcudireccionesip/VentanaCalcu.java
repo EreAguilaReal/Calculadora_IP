@@ -348,6 +348,9 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
                 RedInicial.setIP_Final(FG.IP_fin(RedInicial.getIP(), RedInicial.getMascara()));
                 FG.printIP(RedInicial.getIP_Final());
+                
+                RedInicial.setBroadcast( FG.IP_Broad( RedInicial.IP_Final ) );
+                FG.printIP(RedInicial.getBroadcast());
 
             }
 
