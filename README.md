@@ -7,9 +7,9 @@ Aplicación de escritorio en Java (Swing) con dos herramientas:
 2. **Calculadora VLSM**: asignación de subredes según hosts requeridos, sin solapamientos.
 
 ## Integrantes y roles
-Carlos : Estructura general 
-Johan  : Cálculos CIDR 
-Ere : Cálculos VLSM 
+- Carlos : Estructura general 
+- Johan  : Cálculos CIDR 
+- Ere : Cálculos VLSM 
 
 ## Requisitos
 - JDK 
