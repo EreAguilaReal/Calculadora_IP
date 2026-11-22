@@ -244,9 +244,21 @@ public class VentanaCalcu extends javax.swing.JFrame {
 
     Ventana_info Vinfo;
 
+    String valorCIDR = "";
+    String valorVLSM= "1";
+
     private void mostrarError(String mensaje) {
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+
+    private int mascaraPorDefecto(char tipo){
+        switch (tipo) {
+            case 'A': return 8;
+            case 'B': return 16;
+            case 'C': return 24;
+            default: return 24; // Valor por defecto si no se reconoce la clase
+        }
     }
 
     private void CIDR_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CIDR_ButtonActionPerformed
@@ -254,10 +266,12 @@ public class VentanaCalcu extends javax.swing.JFrame {
         CIDR_Button.setEnabled(false);
         VLSM_Button.setEnabled(true);
 
+        valorVLSM = Text_Entrada3.getText();
+
         NombreTipoCal.setText("CIDR");
         LabelEntrada3.setText("Mascara de Subred (e.i. 24)");
 
-        Text_Entrada3.setText("");
+        Text_Entrada3.setText(valorCIDR);
 
         jScrollPane1.setVisible(false);
 
@@ -274,10 +288,12 @@ public class VentanaCalcu extends javax.swing.JFrame {
         VLSM_Button.setEnabled(false);
         CIDR_Button.setEnabled(true);
 
+        valorCIDR = Text_Entrada3.getText();
+
         NombreTipoCal.setText("VLSM");
         LabelEntrada3.setText("Numero de Subredes");
 
-        Text_Entrada3.setText("1");
+        Text_Entrada3.setText(valorVLSM);
 
         jScrollPane1.setVisible(true);
 
@@ -340,7 +356,8 @@ public class VentanaCalcu extends javax.swing.JFrame {
                 RedInicial.setMascara(FG.gen_Mask(msk));
                 FG.printIP(RedInicial.getMascara());
 
-                RedInicial.setTipo(FG.tipoRed(RedInicial.getIP()[0]));
+                int primerOcteto = Integer.parseInt(Text_Dir.getText().trim().split("\\.")[0]);
+                RedInicial.setTipo(FG.tipoRed(primerOcteto));
                 System.out.println(RedInicial.getTipo());
 
                 RedInicial.setIP_Inicio(FG.IP_ini(RedInicial.getIP()));
@@ -355,32 +372,44 @@ public class VentanaCalcu extends javax.swing.JFrame {
             }
 
             if (RedInicial.getIP()[0] == -1) {
-
                 mostrarError("ERROR - IP no valida");
+                return;
+            }
 
-            } else if (NombreTipoCal.getText().equals("CIDR") && (Integer.parseInt(Text_Mascara.getText()) < Integer.parseInt(Text_Entrada3.getText()))) {
+            // Validacion por clase
+            char tipo = RedInicial.getTipo();
+            int maskDef = mascaraPorDefecto(tipo);
 
-                int Submsk = Integer.parseInt(Text_Entrada3.getText().trim());
+            if (maskDef == -1) {
+                mostrarError("La IP es de clase " + tipo + " (multicast/reservada); no se puede subnetear.");
+                return;
+            }
+            if (msk < maskDef) {
+                mostrarError("La IP es de clase " + tipo + ": la máscara de red debe ser al menos /" + maskDef
+                        + ".\nUna máscara menor es una supernet (agregación), no un subneteo.");
+                return;
+            }
+
+            if (NombreTipoCal.getText().equals("CIDR")) {
+
+                int Submsk = entCheck;
+
                 if (Submsk <= msk || Submsk > 30) {
-                    mostrarError("La máscara de subred debe ser mayor a la inicial y máximo 30.");
+                    mostrarError("La máscara de subred debe ser mayor a la de red (" + msk + ") y máximo 30.");
                     return;
                 }
+
                 Vinfo.IP_Cal = RedInicial;
                 Vinfo.Subredes = FG.generarSubredesCIDR(RedInicial, Submsk);
                 Vinfo.Tipo_Cal = "CIDR";
                 Vinfo.setVisible(true);
 
-            } else if (NombreTipoCal.getText().equals("VLSM") && (Integer.parseInt(Text_Entrada3.getText()) >= 1)) {
+            } else if (NombreTipoCal.getText().equals("VLSM")) {
 
                 Vinfo.Tipo_Cal = "VLSM";
-                int nSubredes = Integer.parseInt(Text_Entrada3.getText());
-
-                modelo.setRowCount(nSubredes);
-
+                modelo.setRowCount(entCheck);
                 Tabla_VLSM.setEnabled(true);
-
                 Calculo_Btn2.setEnabled(true);
-
             }
 
         } else {
