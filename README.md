@@ -1,4 +1,3 @@
-# Calculadora_IP
 # Calculadora IP: CIDR y VLSM
 
 Proyecto 2 de Redes de Computadoras, ESCOM-IPN, grupo 5CM2.
