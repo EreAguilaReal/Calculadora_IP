@@ -13,6 +13,8 @@ public class Red {
     int [] IP_Inicio;   //IP Inicico de hosts
     int [] IP_Final;    //IP Final de hosts
     char tipo;          //Tipo de red
+    String nombre;      //Nombre de la subred (VLAN1, Enlace1...)
+    int hostsPedidos;   //Cantidad de hosts pedidos por el usuario
     
     public Red(){
         
@@ -87,7 +89,22 @@ public class Red {
         this.Mask = Mask;
     }
     
-    
+
+    public String getNombre(){
+        return nombre;
+    }
+
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+
+    public int getHostsPedidos() {
+        return hostsPedidos;
+    }
+
+    public void setHostsPedidos(int hostsPedidos) {
+        this.hostsPedidos = hostsPedidos;
+    }
     
     
 }
